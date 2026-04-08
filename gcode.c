@@ -191,7 +191,7 @@ gcode_result_t gcode_execute(const char *line, char *status, int status_len)
             return GCODE_MISSING_COORD;
         }
 
-        cnc_move_to(hx ? x : NAN, hy ? y : NAN, hz ? z : NAN, STEP_LOW_US);
+        cnc_move_to(hx ? x : NAN, hy ? y : NAN, hz ? z : NAN, STEP_LOW_FAST_US);
         snprintf(status, status_len,
                  "G0: Rapid -> X=%.2f  Y=%.2f  Z=%.2f",
                  get_x_mm(), get_y_mm(), get_z_mm());

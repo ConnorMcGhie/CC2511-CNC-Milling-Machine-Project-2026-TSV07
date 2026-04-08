@@ -313,5 +313,5 @@ void cnc_move_to(float x_mm, float y_mm, float z_mm, uint32_t step_delay_us)
 
 void cnc_home(void)
 {
-    cnc_move_to(0.0f, 0.0f, 0.0f, STEP_LOW_US);
+    cnc_move_to(0.0f, 0.0f, 0.0f, STEP_LOW_FAST_US);
 }
