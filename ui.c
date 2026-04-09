@@ -6,6 +6,7 @@
 
 // Include modules
 #include "ui.h"
+#include "pico/stdlib.h"
 #include "config.h"
 #include "cnc_control.h"
 #include "gcode.h"
@@ -48,6 +49,15 @@
 static cnc_mode_t current_mode = MODE_MANUAL;
 static char cmd_buf[CMD_BUF_LEN];
 static int cmd_len = 0;
+
+/* Drain any pending characters from the input buffer to prevent overflow */
+static void drain_input_buffer(void)
+{
+    while (getchar_timeout_us(0) != PICO_ERROR_TIMEOUT)
+    {
+        /* Discard character */
+    }
+}
 
 /* ── Internal helpers ─────────────────────────────────────── */
 
@@ -227,36 +237,42 @@ void ui_handle_input(int ch)
         case 'd':
         case 'D':
             move(X_STEP_PIN, X_DIR_PIN, false, JOG_STEPS);
+            drain_input_buffer();
             redraw_position();
             ui_set_status("X axis: decrement (X-)");
             break;
         case 'a':
         case 'A':
             move(X_STEP_PIN, X_DIR_PIN, true, JOG_STEPS);
+            drain_input_buffer();
             redraw_position();
             ui_set_status("X axis: increment (X+)");
             break;
         case 's':
         case 'S':
             move(Y_STEP_PIN, Y_DIR_PIN, true, JOG_STEPS);
+            drain_input_buffer();
             redraw_position();
             ui_set_status("Y axis: increment (Y+)");
             break;
         case 'w':
         case 'W':
             move(Y_STEP_PIN, Y_DIR_PIN, false, JOG_STEPS);
+            drain_input_buffer();
             redraw_position();
             ui_set_status("Y axis: decrement (Y-)");
             break;
         case 'q':
         case 'Q':
             move(Z_STEP_PIN, Z_DIR_PIN, true, JOG_STEPS);
+            drain_input_buffer();
             redraw_position();
             ui_set_status("Z axis: increment (Z+)");
             break;
         case 'e':
         case 'E':
             move(Z_STEP_PIN, Z_DIR_PIN, false, JOG_STEPS);
+
             redraw_position();
             ui_set_status("Z axis: decrement (Z-)");
             break;
